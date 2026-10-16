@@ -8,6 +8,13 @@ set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/external/imgui)
 
 find_package(SDL3 REQUIRED CONFIG)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ffmpeg REQUIRED IMPORTED_TARGET
+    libavformat
+    libavcodec
+    libavutil
+    libswscale)
+
 add_library(glad external/glad/src/gl.c)
 target_include_directories(glad PUBLIC external/glad/include)
 
@@ -18,10 +25,11 @@ add_library(imgui
     ${IMGUI_DIR}/imgui_widgets.cpp
     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
     ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp)
+
 target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 
 add_executable(luviolVE WIN32 src/main.cpp src/window.cpp src/editorUI.cpp)
 
 target_include_directories(luviolVE PRIVATE include)
 
-target_link_libraries(luviolVE PRIVATE glad imgui SDL3::SDL3)
+target_link_libraries(luviolVE PRIVATE glad imgui PkgConfig::ffmpeg SDL3::SDL3)
