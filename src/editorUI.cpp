@@ -30,21 +30,44 @@ EditorUI::~EditorUI()
     ImGui::DestroyContext();
 }
 
-void EditorUI::render()
+void EditorUI::render(GLuint texture, int videoW, int videoH)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
     
-    renderPreview();
+    renderPreview(texture, videoW, videoH);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void EditorUI::renderPreview()
+void EditorUI::renderPreview(GLuint texture, int videoW, int videoH)
 {
-    
+    ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
+    ImVec2 avail = ImGui::GetContentRegionAvail();
+    float videoAspect = (float)videoW / (float)videoH;
+    float availAspect = avail.x / avail.y;
+
+    ImVec2 imageSize;
+    if (availAspect > videoAspect)
+    {
+        imageSize.y = avail.y;
+        imageSize.x = avail.y * videoAspect;
+    }
+    else
+    {
+        imageSize.x = avail.x;
+        imageSize.y = avail.x / videoAspect;
+    }
+
+    float offsetX = (avail.x - imageSize.x) * 0.5f;
+    float offsetY = (avail.y - imageSize.y) * 0.5f;
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+
+    ImGui::Image((ImTextureID)(intptr_t)texture, imageSize);
+    ImGui::End();
 }
 
 }

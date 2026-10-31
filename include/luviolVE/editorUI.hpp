@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
 #include <SDL3/SDL.h>
+#include <glad/gl.h>
 
 namespace lvlve
 {
@@ -13,10 +14,10 @@ public:
     EditorUI(SDL_Window* window, SDL_GLContext glContext);
     ~EditorUI();
 
-    void render();
+    void render(GLuint texture, int videoW, int videoH);
 private:
     float mainScale;
-    void renderPreview();
+    void renderPreview(GLuint texture, int videoW, int videoH);
 };
 
 }

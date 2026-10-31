@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SDL3/SDL.h>
-#include <glad/gl.h>
 #include <memory>
 #include <luviolVE/editorUI.hpp>
 
