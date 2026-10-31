@@ -18,17 +18,23 @@ pkg_check_modules(ffmpeg REQUIRED IMPORTED_TARGET
 add_library(glad external/glad/src/gl.c)
 target_include_directories(glad PUBLIC external/glad/include)
 
-add_library(imgui 
-    ${IMGUI_DIR}/imgui.cpp 
-    ${IMGUI_DIR}/imgui_draw.cpp 
-    ${IMGUI_DIR}/imgui_tables.cpp 
+add_library(imgui
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
     ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp)
 
 target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 
-add_executable(luviolVE WIN32 src/main.cpp src/window.cpp src/editorUI.cpp)
+add_executable(luviolVE WIN32 
+    src/main.cpp
+    src/window.cpp
+    src/editorUI.cpp
+    src/video.cpp
+    src/videoRenderer.cpp
+)
 
 target_include_directories(luviolVE PRIVATE include)
 
