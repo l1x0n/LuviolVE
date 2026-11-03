@@ -21,12 +21,12 @@ public:
     void render(AVFrame* frame);
     GLuint getOutputTexture() const { return outTexture; }
 private:
-    int videoW {0};
-    int videoH {0};
-    GLuint VAO {0}, VBO {0}, EBO {0}, FBO {0},
+    int videoW = 0;
+    int videoH = 0;
+    GLuint VAO = 0, VBO = 0, EBO = 0, FBO = 0,
            textures[3] {0, 0, 0},
-           outTexture {0},
-           shaderProgram {0};     
+           outTexture = 0,
+           shaderProgram = 0;     
 };
 
 }

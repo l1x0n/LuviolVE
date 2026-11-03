@@ -1,11 +1,11 @@
-#include <luviolVE/video.hpp>
-#include <SDL3/SDL_messagebox.h>
+#include <luviolVE/videoDecoder.hpp>
 #include <stdexcept>
+#include <SDL3/SDL_messagebox.h>
 
 namespace lvlve
 {
 
-Video::Video(const std::string& videoPath)
+VideoDecoder::VideoDecoder(const std::string& videoPath)
 {
     if (avformat_open_input(&formatContext, videoPath.c_str() , nullptr, nullptr) < 0)
     {
@@ -33,7 +33,7 @@ Video::Video(const std::string& videoPath)
     frame = av_frame_alloc();
 }
 
-Video::~Video()
+VideoDecoder::~VideoDecoder()
 {
     av_frame_free(&frame);
     av_packet_free(&packet);
@@ -41,25 +41,26 @@ Video::~Video()
     avformat_close_input(&formatContext);
 }
 
-AVFrame* Video::getNextFrame() 
+AVFrame* VideoDecoder::getNextFrame() 
 {
-    while (av_read_frame(formatContext, packet) >= 0)
-    {
-        if (packet->stream_index == videoStream->index)
+    while (true)
+    {   
+        int ret = avcodec_receive_frame(codecContext, frame);
+        if (ret == 0)
+            return frame;
+        if (ret != AVERROR(EAGAIN))
+            return nullptr;
+
+        ret = av_read_frame(formatContext, packet);
+        if (ret < 0)
         {
-            if (avcodec_send_packet(codecContext, packet) >= 0)
-            {
-                if (avcodec_receive_frame(codecContext, frame) >= 0)
-                {
-                    av_packet_unref(packet);    
-                    return frame; 
-                }
-                    
-            } 
+            avcodec_send_packet(codecContext, nullptr);
+            continue;
         }
-        av_packet_unref(packet);
+        if (packet->stream_index == videoStream->index)
+            avcodec_send_packet(codecContext, packet);
+        av_packet_unref(packet);      
     }
-    return nullptr;
 }
 
 }

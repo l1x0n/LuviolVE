@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 
 extern "C"
@@ -11,13 +12,13 @@ extern "C"
 namespace lvlve
 {
 
-class Video
+class VideoDecoder
 {
 public:
-    Video(const std::string& videoPath);
-    ~Video();
-    Video(const Video&) = delete;
-    Video& operator=(const Video&) = delete;
+    VideoDecoder(const std::string& videoPath);
+    ~VideoDecoder();
+    VideoDecoder(const VideoDecoder&) = delete;
+    VideoDecoder& operator=(const VideoDecoder&) = delete;
 
     int getVideoWidth() const { return codecContext->width; }
     int getVideoHeight() const { return codecContext->height; }

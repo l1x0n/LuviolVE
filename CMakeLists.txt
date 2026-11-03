@@ -30,12 +30,14 @@ target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 
 add_executable(luviolVE WIN32 
     src/main.cpp
+    src/application.cpp
     src/window.cpp
     src/editorUI.cpp
-    src/video.cpp
+    src/player.cpp
+    src/videoDecoder.cpp
     src/videoRenderer.cpp
 )
-
+target_compile_options(luviolVE PRIVATE -Wall -Wextra -Wpedantic)
 target_include_directories(luviolVE PRIVATE include)
 
 target_link_libraries(luviolVE PRIVATE glad imgui PkgConfig::ffmpeg SDL3::SDL3)

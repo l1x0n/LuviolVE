@@ -1,4 +1,4 @@
-#include <luviolVE/window.hpp>
+#include <luviolVE/application.hpp>
 #include <stdexcept>
 
 int main()
@@ -6,8 +6,8 @@ int main()
 
 try
 {
-    lvlve::Window window;
-    window.run();    
+    lvlve::Application app;
+    app.run();    
 }
 catch (const std::exception& e)
 {
