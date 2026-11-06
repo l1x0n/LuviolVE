@@ -19,19 +19,20 @@ public:
     ~VideoDecoder();
     VideoDecoder(const VideoDecoder&) = delete;
     VideoDecoder& operator=(const VideoDecoder&) = delete;
-
+    
+    AVFrame* getNextFrame();
+    void seek(double t);
     int getVideoWidth() const { return codecContext->width; }
     int getVideoHeight() const { return codecContext->height; }
     AVRational getTimeBase() const { return videoStream->time_base; }
-    AVFrame* getNextFrame();
-
+    
 private:
     AVFormatContext* formatContext = nullptr;
     AVStream* videoStream = nullptr;
     AVCodecContext* codecContext = nullptr;
     AVPacket* packet = nullptr;
     AVFrame* frame = nullptr;
-    
+    int64_t target_ts = AV_NOPTS_VALUE;
 };
 
 }

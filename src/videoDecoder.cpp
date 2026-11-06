@@ -47,20 +47,62 @@ AVFrame* VideoDecoder::getNextFrame()
     {   
         int ret = avcodec_receive_frame(codecContext, frame);
         if (ret == 0)
+        {
+            if (target_ts != AV_NOPTS_VALUE)
+            {           
+                int64_t ts = frame->best_effort_timestamp;
+                if (ts != AV_NOPTS_VALUE && ts < target_ts)
+                    continue;
+                target_ts = AV_NOPTS_VALUE;
+                return frame;
+            }
             return frame;
+        }    
         if (ret != AVERROR(EAGAIN))
-            return nullptr;
-
+        {
+            if (ret == AVERROR_EOF)
+                return nullptr;
+            if (ret < 0)
+            {
+                char errbuf[AV_ERROR_MAX_STRING_SIZE];
+                av_strerror(ret, errbuf, sizeof(errbuf));
+                // logging (future function)
+                return nullptr;  
+            }  
+        }              
         ret = av_read_frame(formatContext, packet);
         if (ret < 0)
-        {
-            avcodec_send_packet(codecContext, nullptr);
+        {   
+            if (ret == AVERROR_EOF)
+                avcodec_send_packet(codecContext, nullptr);
+            else
+            {
+                char errbuf[AV_ERROR_MAX_STRING_SIZE];
+                av_strerror(ret, errbuf, sizeof(errbuf));
+                // logging (future function)
+            }
             continue;
         }
         if (packet->stream_index == videoStream->index)
-            avcodec_send_packet(codecContext, packet);
+        {
+            ret = avcodec_send_packet(codecContext, packet);
+            if (ret < 0)
+            {
+                char errbuf[AV_ERROR_MAX_STRING_SIZE];
+                av_strerror(ret, errbuf, sizeof(errbuf));
+                // logging (future function)
+            } 
+        } 
         av_packet_unref(packet);      
     }
+}
+
+void VideoDecoder::seek(double t)
+{
+    target_ts = av_rescale_q((static_cast<int64_t>(t * AV_TIME_BASE)), AV_TIME_BASE_Q, videoStream->time_base);
+    if (!avformat_seek_file(formatContext, videoStream->index, INT64_MIN, target_ts, target_ts, 0))
+        return;
+    avcodec_flush_buffers(codecContext);
 }
 
 }

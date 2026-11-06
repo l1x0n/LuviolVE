@@ -35,7 +35,7 @@ Window::Window()
 
     SDL_GL_MakeCurrent(window, glContext);
 
-    if(!gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress))
+    if(!gladLoadGL(reinterpret_cast<GLADloadfunc>(SDL_GL_GetProcAddress)))
     {
         SDL_GL_DestroyContext(glContext);
         SDL_DestroyWindow(window);

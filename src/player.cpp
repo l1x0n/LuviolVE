@@ -38,7 +38,8 @@ void Player::update()
         return;
     }
 
-    if (currentFrame && currentFrame->pts * av_q2d(decoder->getTimeBase()) <= clock.time())
+    int64_t pts = currentFrame->best_effort_timestamp;
+    if (pts * av_q2d(decoder->getTimeBase()) <= clock.time())
     {
         renderer->render(currentFrame);
         currentFrame = nullptr;
@@ -51,8 +52,7 @@ void Player::play()
         return;
     if (ended)
     {
-        clock.seek(0);
-        ended = false;
+        seek(0);
     }
     clock.play();
 }
@@ -68,6 +68,16 @@ void Player::togglePlay()
         pause();
     else
         play();
+}
+
+void Player::seek(double t)
+{   
+    if (!decoder)
+        return;
+    currentFrame = nullptr; 
+    clock.seek(t);
+    decoder->seek(t);
+    ended = false;
 }
 
 }

@@ -53,7 +53,7 @@ void EditorUI::preview()
     if (s.texture != 0 && s.videoW != 0 && s.videoH != 0)    
     {
         ImVec2 avail = ImGui::GetContentRegionAvail();
-        float videoAspect = (float)s.videoW / (float)s.videoH;
+        float videoAspect = static_cast<float>(s.videoW) / s.videoH;
         float availAspect = avail.x / avail.y;
 
         ImVec2 imageSize;
@@ -73,7 +73,7 @@ void EditorUI::preview()
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
 
-        ImGui::Image((ImTextureID)(intptr_t)s.texture, imageSize);
+        ImGui::Image(static_cast<ImTextureID>(s.texture), imageSize);
     }
         
     if (ImGui::Button(s.playing ? "Stop" : "Start"))
