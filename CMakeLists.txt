@@ -33,9 +33,11 @@ add_executable(luviolVE WIN32
     src/application.cpp
     src/window.cpp
     src/editorUI.cpp
+    src/editorController.cpp
     src/player.cpp
     src/videoDecoder.cpp
     src/videoRenderer.cpp
+    src/fileDialog.cpp
 )
 target_compile_options(luviolVE PRIVATE -Wall -Wextra -Wpedantic)
 target_include_directories(luviolVE PRIVATE include)
