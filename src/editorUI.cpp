@@ -4,9 +4,9 @@
 namespace lvlve
 {
 
-EditorUI::EditorUI(SDL_Window* window, SDL_GLContext glContext, const Player& player)
-    : mainScale(SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay())),
-      player(player)
+EditorUI::EditorUI(SDL_Window* window, SDL_GLContext glContext, const Player& player, EditorController& controller)
+    : player(player),
+      controller(controller)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -16,6 +16,7 @@ EditorUI::EditorUI(SDL_Window* window, SDL_GLContext glContext, const Player& pl
     ImGui::StyleColorsDark();
 
     ImGuiStyle& style = ImGui::GetStyle();
+    float mainScale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
     style.ScaleAllSizes(mainScale);
     style.FontScaleDpi = mainScale;
 
@@ -36,6 +37,7 @@ void EditorUI::update()
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
     
+    mainMenuBar();
     preview();
 }
 
@@ -43,6 +45,23 @@ void EditorUI::draw()
 {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void EditorUI::mainMenuBar()
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Open file"))
+            {
+                controller.openFile();
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar(); 
+    }
+    
 }
 
 void EditorUI::preview()
@@ -78,7 +97,7 @@ void EditorUI::preview()
         
     if (ImGui::Button(s.playing ? "Stop" : "Start"))
     {
-        
+        controller.togglePlay();
     }
 
     ImGui::End();

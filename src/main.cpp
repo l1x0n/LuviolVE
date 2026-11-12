@@ -1,5 +1,6 @@
 #include <luviolVE/application.hpp>
 #include <stdexcept>
+#include <SDL3/SDL_messagebox.h>
 
 int main()
 {

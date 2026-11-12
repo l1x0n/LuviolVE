@@ -100,7 +100,8 @@ AVFrame* VideoDecoder::getNextFrame()
 void VideoDecoder::seek(double t)
 {
     target_ts = av_rescale_q((static_cast<int64_t>(t * AV_TIME_BASE)), AV_TIME_BASE_Q, videoStream->time_base);
-    if (!avformat_seek_file(formatContext, videoStream->index, INT64_MIN, target_ts, target_ts, 0))
+    int ret = avformat_seek_file(formatContext, videoStream->index, INT64_MIN, target_ts, target_ts, 0);
+    if (ret < 0)
         return;
     avcodec_flush_buffers(codecContext);
 }

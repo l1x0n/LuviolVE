@@ -17,7 +17,9 @@ public:
 private:
     Window window;
     Player player;
-    EditorUI ui;    
+    FileDialog fd;
+    EditorController controller;
+    EditorUI ui;       
 };
 
 }

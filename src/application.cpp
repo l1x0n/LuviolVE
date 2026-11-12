@@ -1,12 +1,14 @@
 #include <luviolVE/application.hpp>
+#include <SDL3/SDL_events.h>
 
 namespace lvlve
 {
 
 Application::Application() 
-    : window(), player(),  
-      ui(window.getWindow(), window.getGLContext(), player)
-      
+    : window(), player(),
+      fd(window.getWindow()),
+      controller(player, fd),   
+      ui(window.getWindow(), window.getGLContext(), player, controller)     
 {}
 
 void Application::run()
@@ -34,6 +36,7 @@ void Application::run()
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         player.update();
+        controller.update();
         ui.update();
         ui.draw();
         SDL_GL_SwapWindow(window.getWindow());

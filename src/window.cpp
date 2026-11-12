@@ -1,5 +1,6 @@
 #include <luviolVE/window.hpp>
 #include <stdexcept>
+#include <SDL3/SDL_init.h>
 #include <glad/gl.h>
 
 namespace lvlve 
